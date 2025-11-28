@@ -37,10 +37,10 @@ export const actualizarPaciente = async (id: number, data: PacienteCrear): Promi
 };
 
 // 5. Eliminar
-export const eliminarPaciente = async (id: number): Promise<void> => {
+export const eliminarPaciente = async (id: number, motivo: string): Promise<void> => {
     await axios.put(`${API_URL}/pacientes/eliminar/${id}`, {
         usuarioEliminacion: "AdminWeb",
-        motivoEliminacion: "Borrado desde interfaz"
+        motivoEliminacion: motivo
     });
 };
 
