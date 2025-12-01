@@ -18,7 +18,8 @@ export interface HistorialClinico {
 export interface Paciente {
     idPaciente: number;
     dni: string;
-    codigoPaciente: string;
+    codigoPaciente?: string; 
+    codigo?: string;
     nombres: string;
     apellidos: string;
     edad: number;
