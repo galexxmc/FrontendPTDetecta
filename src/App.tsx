@@ -1,23 +1,51 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+// src/App.tsx
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import ListaPacientes from './pages/ListaPacientes';
 import PacienteForm from './pages/PacienteForm';
-import WelcomePage from './pages/WelcomePage'; // Importamos la nueva página
+import WelcomePage from './pages/WelcomePage';
+import ComingSoonPage from './pages/ComingSoonPage'; // <--- Importamos el componente
+import { MainLayout } from './components/layout/MainLayout';
+
+const LayoutWrapper = () => (
+  <MainLayout>
+    <Outlet />
+  </MainLayout>
+);
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. RUTA RAÍZ: Muestra la bienvenida */}
         <Route path="/" element={<WelcomePage />} />
 
-        {/* 2. RUTA PRINCIPAL: Muestra la tabla de gestión */}
-        <Route path="/pacientes" element={<ListaPacientes />} />
+        {/* Rutas del Sistema (Dentro del Layout) */}
+        <Route element={<LayoutWrapper />}>
+          
+          {/* Módulo Activo */}
+          <Route path="/pacientes" element={<ListaPacientes />} />
+          <Route path="/crear" element={<PacienteForm />} />
+          <Route path="/editar/:id" element={<PacienteForm />} />
 
-        {/* 3. RUTAS DEL FORMULARIO */}
-        <Route path="/crear" element={<PacienteForm />} />
-        <Route path="/editar/:id" element={<PacienteForm />} />
+          {/* Módulos "Próximamente" (Reutilizando el componente) */}
+          <Route 
+            path="/historias" 
+            element={<ComingSoonPage title="Historias Clínicas" description="El módulo de gestión de historias digitales estará disponible pronto." />} 
+          />
+          <Route 
+            path="/citas" 
+            element={<ComingSoonPage title="Gestión de Citas" />} 
+          />
+          <Route 
+            path="/medicos" 
+            element={<ComingSoonPage title="Directorio Médico" />} 
+          />
+          <Route 
+            path="/examenes" 
+            element={<ComingSoonPage title="Laboratorio" description="Integración con equipos de laboratorio en proceso." />} 
+          />
 
-        {/* 4. REDIRECCIÓN DE SEGURIDAD: Si escriben cualquier cosa rara, van al inicio */}
+        </Route>
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
