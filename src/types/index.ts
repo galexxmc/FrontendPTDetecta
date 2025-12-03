@@ -45,3 +45,31 @@ export interface PacienteCrear {
     idTipoSeguro: number;
     usuarioRegistro: string;
 }
+
+export interface User {
+  email: string;
+  nombreCompleto: string;
+  rol: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  email: string;
+  nombreCompleto: string;
+  rol: string;
+  expiracion: string;
+}
+
+// Lo que enviamos al Login
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+// Lo que enviamos al Registro
+export interface RegisterRequest {
+  nombre: string;
+  apellido: string;
+  email: string;
+  password: string;
+}
