@@ -1,3 +1,4 @@
+// Capa: Frontend - Presentation (Page)
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -29,8 +30,14 @@ export default function ResetPasswordPage() {
   }, [urlEmail, urlToken, setValue]);
 
   const onSubmit = async (data: ResetForm) => {
+    // Validación manual extra por seguridad
     if (data.newPassword !== data.confirmPassword) {
-      Swal.fire({ title: "Error", text: "Las contraseñas no coinciden", icon: "warning", customClass: { popup: "!rounded-3xl" } });
+      Swal.fire({ 
+        title: "Error", 
+        text: "Las contraseñas no coinciden", 
+        icon: "warning", 
+        customClass: { popup: "!rounded-3xl" } 
+      });
       return;
     }
 
@@ -44,7 +51,7 @@ export default function ResetPasswordPage() {
 
       await Swal.fire({
         title: "¡Éxito!",
-        text: "Tu contraseña ha sido restablecida. Ahora puedes ingresar.",
+        text: "Tu contraseña ha sido restablecida. Ahora puedes iniciar sesión.",
         icon: "success",
         customClass: { popup: "!rounded-3xl" },
         confirmButtonText: "Ir al Login"
@@ -63,50 +70,86 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="w-full">
-      <div className="mb-6 text-center">
-        <img src={logoDetecta} alt="Logo" className="w-32 h-auto object-contain drop-shadow-md mx-auto" />
-      </div>
+    // 1. ESTRUCTURA MAESTRA: 
+    // - min-h-screen: Ocupa toda la altura vertical visible.
+    // - justify-center: Empuja el contenido al medio verticalmente.
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4">
+      
+      {/* 2. CONTENEDOR LIMITADO:
+         - max-w-md: Evita que se estire horizontalmente.
+         - w-full: Se asegura de usar el espacio disponible en móviles.
+      */}
+      <div className="w-full max-w-md">
+        
+        {/* LOGO */}
+        <div className="mb-8 text-center">
+          <img src={logoDetecta} alt="Logo Detecta" className="w-40 h-auto object-contain drop-shadow-md mx-auto" />
+        </div>
 
-      <div className="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-3xl w-full shadow-2xl">
-        <h1 className="text-2xl font-bold text-white mb-2 text-center">Nueva Contraseña</h1>
-        <p className="text-gray-400 text-sm mb-6 text-center">Crea una contraseña segura para tu cuenta</p>
+        {/* TARJETA */}
+        <div className="w-full bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-3xl shadow-2xl">
+          <h1 className="text-2xl font-bold text-white mb-2 text-center">Nueva Contraseña</h1>
+          <p className="text-gray-400 text-sm mb-6 text-center">Crea una contraseña segura para tu cuenta</p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
-          
-          <div>
-            <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Correo</label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Mail size={18} /></div>
-              <input {...register("email", { required: "Requerido" })} readOnly className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-400 focus:outline-none cursor-not-allowed" />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
+            
+            {/* Campo Email (Read Only) */}
+            <div>
+              <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Correo</label>
+              <div className="relative mt-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Mail size={18} /></div>
+                <input 
+                  {...register("email", { required: "Requerido" })} 
+                  readOnly 
+                  className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-gray-400 focus:outline-none cursor-not-allowed select-none" 
+                />
+              </div>
             </div>
-          </div>
 
-          <input type="hidden" {...register("token", { required: "Token faltante" })} />
+            <input type="hidden" {...register("token", { required: "Token faltante" })} />
 
-          <div>
-            <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Nueva Contraseña</label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Lock size={18} /></div>
-              <input type="password" {...register("newPassword", { required: "Requerido", minLength: { value: 6, message: "Mínimo 6 caracteres" } })} className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 transition" placeholder="••••••" />
+            {/* Nueva Contraseña */}
+            <div>
+              <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Nueva Contraseña</label>
+              <div className="relative mt-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Lock size={18} /></div>
+                <input 
+                  type="password" 
+                  {...register("newPassword", { 
+                    required: "Requerido", 
+                    minLength: { value: 6, message: "Mínimo 6 caracteres" } 
+                  })} 
+                  className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 transition placeholder-gray-600" 
+                  placeholder="••••••" 
+                />
+              </div>
+              {errors.newPassword && <span className="text-red-400 text-xs ml-1">{errors.newPassword.message}</span>}
             </div>
-            {errors.newPassword && <span className="text-red-400 text-xs ml-1">{errors.newPassword.message}</span>}
-          </div>
 
-          <div>
-            <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Confirmar Contraseña</label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Lock size={18} /></div>
-              <input type="password" {...register("confirmPassword", { required: "Requerido", validate: (val) => val === watch('newPassword') || "Las contraseñas no coinciden" })} className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 transition" placeholder="••••••" />
+            {/* Confirmar Contraseña */}
+            <div>
+              <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Confirmar Contraseña</label>
+              <div className="relative mt-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Lock size={18} /></div>
+                <input 
+                  type="password" 
+                  {...register("confirmPassword", { 
+                    required: "Requerido", 
+                    validate: (val) => val === watch('newPassword') || "Las contraseñas no coinciden" 
+                  })} 
+                  className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-emerald-500 transition placeholder-gray-600" 
+                  placeholder="••••••" 
+                />
+              </div>
+              {errors.confirmPassword && <span className="text-red-400 text-xs ml-1">{errors.confirmPassword.message}</span>}
             </div>
-            {errors.confirmPassword && <span className="text-red-400 text-xs ml-1">{errors.confirmPassword.message}</span>}
-          </div>
 
-          <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 mt-4">
-            {isSubmitting ? <Loader2 className="animate-spin" /> : <>Cambiar Contraseña <ArrowRight size={20}/></>}
-          </button>
+            <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 mt-4">
+              {isSubmitting ? <Loader2 className="animate-spin" /> : <>Cambiar Contraseña <ArrowRight size={20}/></>}
+            </button>
 
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

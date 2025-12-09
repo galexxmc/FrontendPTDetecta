@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-// 1. ELIMINAMOS: AnimatePresence y useLocation de aquí (ya no hacen falta)
 import { MainLayout } from './components/layout/MainLayout';
 import { AuthLayout } from './components/layout/AuthLayout';
 
@@ -18,21 +17,18 @@ const ProtectedRoute = () => {
   return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
 };
 
+// ✅ CORRECCIÓN AQUÍ:
+// Ya no pasamos children. El MainLayout usa useOutlet() internamente.
 const DashboardLayoutWrapper = () => (
-  <MainLayout>
-    <Outlet />
-  </MainLayout>
+  <MainLayout />
 );
 
 function App() {
   return (
     <BrowserRouter>
-      {/* 2. ELIMINAMOS <AnimatePresence> QUE ENVOLVÍA TODO */}
-      {/* 3. ELIMINAMOS props location y key DE ROUTES */}
       <Routes>
         
-        {/* GRUPO 1: RUTAS PÚBLICAS */}
-        {/* Al no tener key global, AuthLayout NO se desmonta al cambiar entre Login y Registro */}
+        {/* GRUPO 1: RUTAS PÚBLICAS (Auth) */}
         <Route element={<AuthLayout />}>
           <Route path="/" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -40,8 +36,9 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>
 
-        {/* GRUPO 2: RUTAS PRIVADAS */}
+        {/* GRUPO 2: RUTAS PRIVADAS (Dashboard) */}
         <Route element={<ProtectedRoute />}> 
+            {/* El Wrapper renderiza el MainLayout, que gestiona las animaciones */}
             <Route element={<DashboardLayoutWrapper />}>
                 <Route path="/pacientes" element={<ListaPacientes />} />
                 <Route path="/crear" element={<PacienteForm />} />

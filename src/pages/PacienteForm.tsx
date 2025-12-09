@@ -1,4 +1,6 @@
-// src/pages/PacienteForm.tsx
+// Capa: Frontend - Presentation (Page)
+// Archivo: src/pages/PacienteForm.tsx
+
 import { Save, ArrowLeft } from "lucide-react";
 import { usePacienteForm } from "../hooks/usePacienteForm";
 
@@ -32,25 +34,28 @@ export default function PacienteForm() {
   ];
 
   return (
-    <div className="flex justify-center p-4">
+    // RESPONSIVE 1: Padding externo ajustado (p-4 en móvil, md:p-8 en escritorio)
+    <div className="flex justify-center p-4 md:p-8">
       <Card className="w-full max-w-3xl">
         
         {/* ENCABEZADO */}
-        <div className="bg-slate-800 p-6 flex items-center gap-4">
+        {/* RESPONSIVE 2: Padding interno ajustado (p-4 vs p-6) */}
+        <div className="bg-slate-800 p-4 md:p-6 flex items-center gap-4">
           <button
             onClick={() => navigate("/pacientes")}
-            className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition text-white backdrop-blur-sm"
+            className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition text-white backdrop-blur-sm shrink-0"
             type="button"
             title="Volver"
           >
             <ArrowLeft size={24} />
           </button>
           
-          <div className="text-white">
-            <h2 className="text-2xl font-bold">
+          <div className="text-white min-w-0"> {/* min-w-0 ayuda a truncar texto si es necesario */}
+            {/* RESPONSIVE 3: Tamaño de fuente adaptable (text-xl vs text-2xl) */}
+            <h2 className="text-xl md:text-2xl font-bold truncate">
               {esEdicion ? "Editar Paciente" : "Registrar Paciente"}
             </h2>
-            <p className="text-white text-sm mt-1 opacity-90">
+            <p className="text-white text-xs md:text-sm mt-1 opacity-90 truncate">
               {esEdicion
                 ? `Modificando registro ID: #${id}`
                 : "Todos los campos son obligatorios"}
@@ -59,10 +64,12 @@ export default function PacienteForm() {
         </div>
 
         {/* CUERPO DEL FORMULARIO */}
-        <div className="p-8">
+        {/* RESPONSIVE 4: Menos padding en móvil para ganar espacio horizontal */}
+        <div className="p-4 md:p-8">
           <form onSubmit={handleSubmit(onGuardar)} className="space-y-6">
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* GRID PRINCIPAL: 1 columna en móvil, 2 en escritorio (md:grid-cols-2) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               
               {/* --- DATOS PERSONALES --- */}
               <Input
@@ -91,7 +98,8 @@ export default function PacienteForm() {
                 {...register("apellidos", { required: "El apellido es obligatorio" })}
               />
 
-              <div className="grid grid-cols-2 gap-4">
+              {/* Fila Edad/Sexo: Mantenemos 2 columnas incluso en móvil porque son campos cortos */}
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
                 <Input
                   label="Edad"
                   type="number"
@@ -125,7 +133,7 @@ export default function PacienteForm() {
                 {...register("idTipoSeguro", { required: "Seleccione un seguro" })}
               />
 
-              {/* --- DATOS DE CONTACTO (AHORA OBLIGATORIOS) --- */}
+              {/* --- DATOS DE CONTACTO --- */}
               <div className="md:col-span-2">
                 <Input
                   label="Dirección"
@@ -163,11 +171,18 @@ export default function PacienteForm() {
             </div>
 
             {/* BOTONES DE ACCIÓN */}
-            <div className="flex justify-end gap-3 pt-6 border-t border-gray-100 mt-6">
+            {/* RESPONSIVE 5:
+                - flex-col-reverse: En móvil, 'Guardar' va arriba y 'Cancelar' abajo.
+                - md:flex-row: En escritorio, van uno al lado del otro.
+            */}
+            <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-6 border-t border-gray-100 mt-6">
+              
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={() => navigate("/pacientes")}
+                // RESPONSIVE 6: Botones full width en móvil
+                className="w-full md:w-auto"
               >
                 Cancelar
               </Button>
@@ -176,6 +191,7 @@ export default function PacienteForm() {
                 type="submit" 
                 variant="primary" 
                 icon={<Save size={19} />}
+                className="w-full md:w-auto"
               >
                 {esEdicion ? "Guardar Cambios" : "Registrar Paciente"}
               </Button>

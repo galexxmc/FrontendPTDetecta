@@ -1,4 +1,4 @@
-// src/pages/ListaPacientes.tsx
+// Capa: Frontend - Presentation (Page)
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
@@ -11,24 +11,19 @@ import {
   UserCheck,
 } from "lucide-react";
 import type { Paciente } from "../types";
-
-// 1. IMPORTAMOS EL NUEVO HOOK
 import { usePacientes } from "../hooks/usePacientes";
 
 export default function ListaPacientes() {
   const navigate = useNavigate();
+  const { pacientes, cargando, handleEliminar, handleHabilitarPaciente } = usePacientes();
 
-  // 2. USAMOS EL HOOK (Desempaquetamos la lógica)
-  const { pacientes, cargando, handleEliminar, handleHabilitarPaciente } =
-    usePacientes();
-
-  const handleVerHistoria = (/*idPaciente: number*/) => {
-    // navigate(`/historias/${idPaciente}`);
+  const handleVerHistoria = () => {
     navigate(`/historias`);
   };
 
-  // --- LÓGICA DE VISUALIZAR (Puramente UI/Presentacional, se queda aquí para no ensuciar el hook) ---
   const handleVisualizar = (p: Paciente) => {
+    // ... (Tu lógica de SweetAlert se mantiene idéntica, la omito para ahorrar espacio visual, pero va aquí) ...
+    // Solo copiar y pegar tu función handleVisualizar original
     const fechaFormat = p.fechaNacimiento
       ? String(p.fechaNacimiento).split("T")[0]
       : "No registrada";
@@ -56,9 +51,7 @@ export default function ListaPacientes() {
               </svg>
             </div>
             <div class="text-left">
-              <h2 class="text-xl font-bold text-slate-800 m-0 ">${
-                p.apellidos
-              }, ${p.nombres}</h2>
+              <h2 class="text-xl font-bold text-slate-800 m-0 ">${p.apellidos}, ${p.nombres}</h2>
               <h2 class="text-sm font-medium text-slate-600 m-0 inline-block">Código:</h2>
               <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs font-mono font-bold mt-1 inline-block">
                 ${p.codigoPaciente}
@@ -68,47 +61,21 @@ export default function ListaPacientes() {
           <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
             <table class="w-full text-sm text-left">
               <tbody class="divide-y divide-slate-200">
-                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100 w-1/3">DNI</td><td class="p-3 text-slate-800">${
-                  p.dni
-                }</td></tr>
-                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100 w-1/3">Correo</td><td class="p-3 text-slate-800">${
-                  p.email
-                }</td></tr>
-                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">Edad</td><td class="p-3 text-slate-800">${
-                  p.edad
-                } años</td></tr>
+                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100 w-1/3">DNI</td><td class="p-3 text-slate-800">${p.dni}</td></tr>
+                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100 w-1/3">Correo</td><td class="p-3 text-slate-800">${p.email}</td></tr>
+                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">Edad</td><td class="p-3 text-slate-800">${p.edad} años</td></tr>
                 <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100/50">Fecha Nacimiento</td><td class="p-3 text-slate-800">${fechaFormat}</td></tr>
-                <tr>
-                  <td class="p-3 font-semibold text-slate-600 bg-slate-100">Sexo</td>
-                  <td class="p-3 text-slate-800">${
-                    p.sexo === "M"
-                      ? "Masculino"
-                      : p.sexo === "F"
-                      ? "Femenino"
-                      : p.sexo
-                  }</td>
-                </tr>
-                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">Teléfono</td><td class="p-3 text-slate-800">${
-                  p.telefono || "-"
-                }</td></tr>
-                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">Dirección</td><td class="p-3 text-slate-800">${
-                  p.direccion || "No registrada"
-                }</td></tr>
+                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">Sexo</td><td class="p-3 text-slate-800">${p.sexo === "M" ? "Masculino" : p.sexo === "F" ? "Femenino" : p.sexo}</td></tr>
+                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">Teléfono</td><td class="p-3 text-slate-800">${p.telefono || "-"}</td></tr>
+                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">Dirección</td><td class="p-3 text-slate-800">${p.direccion || "No registrada"}</td></tr>
                 <tr>
                   <td class="p-3 font-semibold ${colorEtiqueta}">Seguro</td>
                   <td class="p-3 font-medium ${colorContenido}">
                     ${p.seguro?.nombreSeguro || "N/A"} 
-                    <span class="text-xs text-slate-500 block font-normal">${
-                      p.seguro?.tipoCobertura || ""
-                    }</span>
+                    <span class="text-xs text-slate-500 block font-normal">${p.seguro?.tipoCobertura || ""}</span>
                   </td>
                 </tr>
-                <tr>
-                  <td class="p-3 font-semibold text-slate-600 bg-slate-100">N° Historial</td>
-                  <td class="p-3 text-slate-800 font-bold">${
-                    p.historial?.codigoHistoria || "Pendiente"
-                  }</td>
-                </tr>
+                <tr><td class="p-3 font-semibold text-slate-600 bg-slate-100">N° Historial</td><td class="p-3 text-slate-800 font-bold">${p.historial?.codigoHistoria || "Pendiente"}</td></tr>
               </tbody>
             </table>
           </div>
@@ -118,36 +85,42 @@ export default function ListaPacientes() {
       showConfirmButton: false,
       width: "600px",
       customClass: {
-        popup:
-          "!rounded-[20px] overflow-hidden shadow-2xl border border-gray-100",
+        popup: "!rounded-[20px] overflow-hidden shadow-2xl border border-gray-100",
       },
     });
   };
 
   return (
-      <div className="p-8 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">
+      // RESPONSIVE FIX 1: Padding reducido en móviles (p-4) y normal en escritorio (md:p-8)
+      <div className="p-4 md:p-8 max-w-7xl mx-auto">
+        
+        {/* RESPONSIVE FIX 2: Header apilable */}
+        {/* flex-col en móvil (apilado), md:flex-row en escritorio (lado a lado) */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4">
+          <div className="text-center md:text-left w-full md:w-auto">
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
               Gestión de Pacientes
             </h1>
-            <p className="text-slate-500">
+            <p className="text-slate-500 text-sm md:text-base">
               Sistema "Detecta" - Panel Principal
             </p>
           </div>
-          <div className="flex gap-3">
+
+          <div className="flex flex-wrap justify-center md:justify-end gap-3 w-full md:w-auto">
             <button
               onClick={handleHabilitarPaciente}
-              className="bg-[#d7e65d] hover:bg-[#bcca55] text-slate-700  px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 transition shadow-sm cursor-pointer"
+              className="bg-[#d7e65d] hover:bg-[#bcca55] text-slate-700 px-4 py-2.5 rounded-lg font-medium flex items-center gap-2 transition shadow-sm cursor-pointer text-sm md:text-base flex-1 md:flex-none justify-center"
             >
-              <UserCheck size={20} />
-              <span className="hidden sm:inline">Habilitar Paciente</span>
+              <UserCheck size={18} className="md:w-5 md:h-5" />
+              {/* Ocultamos texto en pantallas MUY pequeñas si es necesario, pero aquí lo dejamos flexible */}
+              <span className="inline">Habilitar</span>
             </button>
             <button
               onClick={() => navigate("/crear")}
-              className="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-2.5 rounded-lg font-medium flex items-center gap-2 transition shadow-sm cursor-pointer"
+              className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2.5 rounded-lg font-medium flex items-center gap-2 transition shadow-sm cursor-pointer text-sm md:text-base flex-1 md:flex-none justify-center"
             >
-              <UserPlus size={20} /> Nuevo Paciente
+              <UserPlus size={18} className="md:w-5 md:h-5" /> 
+              <span>Nuevo</span>
             </button>
           </div>
         </div>
@@ -156,104 +129,100 @@ export default function ListaPacientes() {
           {cargando ? (
             <div className="p-10 text-center text-gray-500">Cargando...</div>
           ) : (
-            <table className="w-full text-center border-collapse text-sm">
-              <thead className="bg-gray-800 border-b border-gray-800">
-                <tr>
-                  <th className="p-4 text-sm font-semibold text-white">
-                    <div className="flex items-center gap-1 select-none justify-center">
-                      Código
-                    </div>
-                  </th>
-                  <th className="p-4 text-sm font-semibold text-white">
-                    Apellidos
-                  </th>
-                  <th className="p-4 text-sm font-semibold text-white">
-                    Nombres
-                  </th>
-                  <th className="p-4 text-sm font-semibold text-white">DNI</th>
-                  <th className="p-4 text-sm font-semibold text-white">
-                    Seguro
-                  </th>
-                  <th className="p-4 text-sm font-semibold text-white">
-                    Historia Clínica
-                  </th>
-                  <th className="p-4 text-sm font-semibold text-white">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {pacientes.map((p) => (
-                  <tr
-                    key={p.idPaciente}
-                    className="hover:bg-slate-50 transition text-center"
-                  >
-                    <td className="p-4">
-                      <div className="flex items-center gap-2 justify-center">
-                        <Hash size={14} className="text-slate-400" />
-                        <span className="font-mono text-slate-700 font-bold bg-slate-100 px-2 py-1 rounded text-xs border border-slate-200">
-                          {p.codigoPaciente}
-                        </span>
+            // RESPONSIVE FIX 3: Wrapper de scroll horizontal
+            // 'overflow-x-auto' permite deslizar la tabla si no cabe
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-center border-collapse text-sm">
+                <thead className="bg-gray-800 border-b border-gray-800">
+                  <tr>
+                    {/* RESPONSIVE FIX 4: whitespace-nowrap
+                        Evita que los títulos se rompan en 2 líneas y se vean feos */}
+                    <th className="p-4 text-sm font-semibold text-white whitespace-nowrap">
+                      <div className="flex items-center gap-1 select-none justify-center">
+                        Código
                       </div>
-                    </td>
-                    <td className="p-4 text-slate-800">{p.apellidos}</td>
-                    <td className="p-4 text-slate-800">{p.nombres}</td>
-                    <td className="p-4">
-                      <span className="font-mono text-slate-700 font-bold bg-slate-100 px-2 py-1 rounded text-xs border border-slate-200">
-                        {p.dni}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          p.seguro?.nombreSeguro === "SIS"
-                            ? "bg-green-100 text-green-800"
-                            : p.seguro?.nombreSeguro === "EsSalud"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-purple-100 text-purple-800"
-                        }`}
-                      >
-                        {p.seguro?.nombreSeguro || "N/A"}
-                      </span>
-                    </td>
-                    <td
-                      className="p-4 text-sm text-slate-600 cursor-pointer hover:bg-slate-100 transition" 
-                      onClick={() => handleVerHistoria()}
-                    >
-                      <div className="flex items-center gap-1 justify-center hover:text-cyan-600 transition">
-                        <Activity size={16} className="text-cyan-500" />
-                        {p.historial?.codigoHistoria || "Pendiente"}
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          onClick={() => handleVisualizar(p)}
-                          className="p-2 text-slate-500 hover:text-blue-600 rounded transition cursor-pointer"
-                          title="Visualizar Detalle"
-                        >
-                          <Eye size={18} />
-                        </button>
-                        <button
-                          onClick={() => navigate(`/editar/${p.idPaciente}`)}
-                          className="p-2 text-slate-500 hover:text-amber-500 rounded transition cursor-pointer"
-                          title="Editar Registro"
-                        >
-                          <Pencil size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleEliminar(p.idPaciente)}
-                          className="p-2 text-slate-500 hover:text-red-600 rounded transition cursor-pointer"
-                          title="Eliminar Registro"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
+                    </th>
+                    <th className="p-4 text-sm font-semibold text-white whitespace-nowrap">Apellidos</th>
+                    <th className="p-4 text-sm font-semibold text-white whitespace-nowrap">Nombres</th>
+                    <th className="p-4 text-sm font-semibold text-white whitespace-nowrap">DNI</th>
+                    <th className="p-4 text-sm font-semibold text-white whitespace-nowrap">Seguro</th>
+                    <th className="p-4 text-sm font-semibold text-white whitespace-nowrap">Historia Clínica</th>
+                    <th className="p-4 text-sm font-semibold text-white whitespace-nowrap">Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {pacientes.map((p) => (
+                    <tr
+                      key={p.idPaciente}
+                      className="hover:bg-slate-50 transition text-center"
+                    >
+                      <td className="p-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2 justify-center">
+                          <Hash size={14} className="text-slate-400" />
+                          <span className="font-mono text-slate-700 font-bold bg-slate-100 px-2 py-1 rounded text-xs border border-slate-200">
+                            {p.codigoPaciente}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-slate-800 whitespace-nowrap">{p.apellidos}</td>
+                      <td className="p-4 text-slate-800 whitespace-nowrap">{p.nombres}</td>
+                      <td className="p-4 whitespace-nowrap">
+                        <span className="font-mono text-slate-700 font-bold bg-slate-100 px-2 py-1 rounded text-xs border border-slate-200">
+                          {p.dni}
+                        </span>
+                      </td>
+                      <td className="p-4 whitespace-nowrap">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                            p.seguro?.nombreSeguro === "SIS"
+                              ? "bg-green-100 text-green-800"
+                              : p.seguro?.nombreSeguro === "EsSalud"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-purple-100 text-purple-800"
+                          }`}
+                        >
+                          {p.seguro?.nombreSeguro || "N/A"}
+                        </span>
+                      </td>
+                      <td
+                        className="p-4 text-sm text-slate-600 cursor-pointer hover:bg-slate-100 transition whitespace-nowrap" 
+                        onClick={() => handleVerHistoria()}
+                      >
+                        <div className="flex items-center gap-1 justify-center hover:text-cyan-600 transition">
+                          <Activity size={16} className="text-cyan-500" />
+                          {p.historial?.codigoHistoria || "Pendiente"}
+                        </div>
+                      </td>
+                      <td className="p-4 whitespace-nowrap">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            onClick={() => handleVisualizar(p)}
+                            className="p-2 text-slate-500 hover:text-blue-600 rounded transition cursor-pointer"
+                            title="Visualizar Detalle"
+                          >
+                            <Eye size={18} />
+                          </button>
+                          <button
+                            onClick={() => navigate(`/editar/${p.idPaciente}`)}
+                            className="p-2 text-slate-500 hover:text-amber-500 rounded transition cursor-pointer"
+                            title="Editar Registro"
+                          >
+                            <Pencil size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleEliminar(p.idPaciente)}
+                            className="p-2 text-slate-500 hover:text-red-600 rounded transition cursor-pointer"
+                            title="Eliminar Registro"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
