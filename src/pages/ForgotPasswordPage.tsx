@@ -27,6 +27,7 @@ export default function ForgotPasswordPage() {
       setTokenSimulado(response.data.tokenDePrueba);
       setEmailEnviado(data.email);
       setIsSuccess(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       Swal.fire({
         icon: "error",

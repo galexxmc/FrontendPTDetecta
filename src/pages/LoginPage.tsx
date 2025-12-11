@@ -156,7 +156,7 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <button type="submit" disabled={isSubmitting} className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 mt-4">
+                <button type="submit" disabled={isSubmitting} className="w-full py-3.5 bg-linear-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 mt-4">
                   {isSubmitting ? <Loader2 className="animate-spin" /> : <>Ingresar <ArrowRight size={20} /></>}
                 </button>
               </form>

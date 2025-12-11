@@ -35,6 +35,7 @@ export default function RegisterPage() {
       });
 
       navigate("/");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
       Swal.fire({
@@ -147,7 +148,7 @@ export default function RegisterPage() {
                 <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-6"
+                className="w-full py-3.5 bg-linear-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-6"
                 >
                 {isSubmitting ? <Loader2 className="animate-spin" /> : <>Registrarme <ArrowRight size={20} /></>}
                 </button>
