@@ -1,81 +1,95 @@
-# 💻 PT Detecta - Cliente Web
+# PT Detecta – Frontend (Cliente Web)
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+Cliente web para el sistema **PT Detecta**, orientado a la gestión clínica básica.
 
-Interfaz moderna para el sistema de gestión clínica **PT Detecta**.  
-Construida con **React**, **TypeScript** y **TailwindCSS**.
+Incluye:
+- Autenticación (registro / login / recuperación de contraseña) consumiendo la API.
+- Rutas protegidas (dashboard) con React Router.
+- Gestión de pacientes (listar, crear, editar, eliminación lógica, re-habilitar) consumiendo la API.
 
-🔗 **Demo en Vivo:**  
-https://frontend-pt-detecta.vercel.app
+## Demo
+Si existe un despliegue activo, en este repositorio se usó:
+- https://frontend-pt-detecta.vercel.app
 
----
+## Tecnologías
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS (v4, vía plugin de Vite)
+- React Router DOM
+- Axios
+- React Hook Form
+- Framer Motion
+- ESLint
 
-## 🚀 Instalación y Ejecución Local
+## Arquitectura / estructura del proyecto
+Organización por responsabilidades dentro de `src/`:
 
-### 📌 Prerrequisitos
+- `src/pages/`: pantallas (login, register, lista de pacientes, formulario, etc.)
+- `src/components/`:
+  - `layout/`: layouts (auth layout, main layout, header/footer)
+  - `ui/`: componentes reutilizables (button, input, select, card)
+- `src/services/`: capa de acceso a la API (auth y pacientes)
+- `src/config/`: configuración compartida (cliente Axios y baseURL)
+- `src/context/`: estado global (AuthContext) y manejo de sesión
+- `src/hooks/`: hooks de lógica (fetching y formularios)
+- `src/types/`: tipos/contratos TypeScript
+- `src/utils/`: utilidades (fechas, etc.)
 
-Asegúrate de tener instalado:
+## Ejecutar en local (guía para un usuario nuevo)
 
-- **Node.js** (v18+)
-- **npm** o **yarn**
-- La **API Backend (PT Detecta)** ejecutándose en:  
-  `http://localhost:5036`  
-  *(ver el README del Backend para más detalles)*
+### Prerrequisitos
+- Node.js 18+
+- npm (recomendado) o yarn
+- Backend ejecutándose (por defecto):
+  - API: `http://localhost:5036`
 
----
-
-## 📥 1. Clonar el Repositorio
-
+### 1) Clonar
 ```bash
-git clone https://github.com/tu-usuario/FrontendPTDetecta.git
+git clone https://github.com/galexxmc/FrontendPTDetecta.git
 cd FrontendPTDetecta
 ```
 
----
-
-## 📦 2. Instalar Dependencias
-
+### 2) Instalar dependencias
+Este repo incluye `package-lock.json`, por lo que lo más reproducible es usar npm:
 ```bash
 npm install
-# o
-yarn install
 ```
 
----
+### 3) Configurar variables de entorno
+Este proyecto usa Vite; por eso las variables deben empezar con `VITE_`.
 
-## ⚙️ 3. Configurar la Conexión a la API Local
-
-Crea un archivo `.env` en la raíz del proyecto y agrega:
-
+Crea/ajusta el archivo `.env` (en la raíz) con la URL base de la API:
 ```bash
 VITE_API_URL=http://localhost:5036/api
 ```
 
----
+Notas:
+- El cliente Axios usa `import.meta.env.VITE_API_URL` y hace fallback a `http://localhost:5036/api`.
+- Si cambias el puerto o el host del backend, actualiza esta variable.
 
-## ▶️ 4. Iniciar el Cliente Web
-
+### 4) Ejecutar en modo desarrollo
 ```bash
 npm run dev
 ```
 
-🎉 La aplicación se ejecutará en:  
-http://localhost:5173
+Vite levantará el sitio (por defecto):
+- `http://localhost:5173`
+
+### 5) Build de producción (opcional)
+```bash
+npm run build
+```
+
+### 6) Previsualizar el build (opcional)
+```bash
+npm run preview
+```
+
+## Autenticación (cómo funciona)
+- Al iniciar sesión/registrarte, el backend retorna un JWT.
+- El frontend guarda el token en `localStorage` y lo setea en el header `Authorization` del cliente Axios.
+- Las rutas del dashboard están protegidas con un `ProtectedRoute`.
 
 ---
-
-## ✨ Características Principales
-
-- ⚡ **Rápido**: Build optimizado con Vite
-- 🛡️ **Tipado**: Uso estricto de TypeScript
-- 🔐 **Seguridad**: Autenticación con JWT y rutas protegidas
-- 🎨 **UI Moderna**: Diseño responsivo con TailwindCSS
-
----
-
-## 👨‍💻 Autor
-
-Desarrollador **Gherson Alexis**
+Autor: Gherson Alexis
