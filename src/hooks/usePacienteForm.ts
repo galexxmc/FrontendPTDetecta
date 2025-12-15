@@ -14,7 +14,7 @@ import type { PacienteCrear, TipoSeguro } from "../types";
 export const usePacienteForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const esEdicion = !!id; // Convertimos a booleano
+  const esEdicion = !!id; 
 
   const [seguros, setSeguros] = useState<TipoSeguro[]>([]);
 
@@ -22,7 +22,8 @@ export const usePacienteForm = () => {
   const {
     register,
     handleSubmit,
-    setValue,
+    setValue, // Necesario para actualizar la edad
+    watch,    // Necesario para vigilar la fecha
     formState: { errors },
   } = useForm<PacienteCrear>();
 
@@ -30,15 +31,13 @@ export const usePacienteForm = () => {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        // 1. Cargar Seguros (Siempre necesario)
         const listaSeguros = await obtenerSeguros();
         setSeguros(listaSeguros);
 
-        // 2. Si es edición, cargar datos del paciente
         if (esEdicion) {
           const paciente = await obtenerPacientePorId(Number(id));
 
-          // Mapeo de datos al formulario
+          // Mapeo de datos
           setValue("dni", paciente.dni);
           setValue("nombres", paciente.nombres);
           setValue("apellidos", paciente.apellidos);
@@ -49,7 +48,6 @@ export const usePacienteForm = () => {
           setValue("email", paciente.email);
           setValue("idTipoSeguro", paciente.seguro?.idTipoSeguro || 0);
 
-          // Formateo de fecha para input type="date"
           if (paciente.fechaNacimiento) {
             const fechaStr = String(paciente.fechaNacimiento);
             const fechaYYYYMMDD = fechaStr.split("T")[0];
@@ -58,19 +56,19 @@ export const usePacienteForm = () => {
         }
       } catch (error) {
         console.error(error);
-        Swal.fire("Error", "No se pudo cargar la información necesaria", "error");
+        Swal.fire("Error", "No se pudo cargar la información", "error");
         navigate("/pacientes");
       }
     };
 
     cargarDatos();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, esEdicion]); // Dependencias correctas
+  }, [id, esEdicion]); 
 
   // --- LÓGICA DE GUARDADO (SUBMIT) ---
   const onGuardar = async (data: PacienteCrear) => {
     try {
-      // Conversiones de tipos necesarias
+      // Conversiones de tipos
       data.idTipoSeguro = Number(data.idTipoSeguro);
       data.edad = Number(data.edad);
 
@@ -82,15 +80,12 @@ export const usePacienteForm = () => {
           text: "Datos modificados correctamente.",
           timer: 2000,
           showConfirmButton: false,
-          customClass: {
-            popup: "!rounded-3xl",
-            icon: "text-xs",
-            title: "!text-xl",
-            htmlContainer: "!text-base",
-          },
         });
       } else {
-        data.usuarioRegistro = "WebUser"; // O tomar del contexto de autenticación
+        // 🔥 LIMPIEZA DE ARQUITECTURA: 
+        // Eliminamos: data.usuarioRegistro = "WebUser"; 
+        // El Backend (Interceptor + JWT) ya sabe quién eres.
+        
         await crearPaciente(data);
         Swal.fire({
           icon: "success",
@@ -98,12 +93,6 @@ export const usePacienteForm = () => {
           text: "Paciente creado correctamente.",
           timer: 2000,
           showConfirmButton: false,
-          customClass: {
-            popup: "!rounded-3xl",
-            icon: "text-xs",
-            title: "!text-xl",
-            htmlContainer: "!text-base",
-          },
         });
       }
       navigate("/pacientes");
@@ -113,27 +102,21 @@ export const usePacienteForm = () => {
         icon: "error",
         title: "¡Error!",
         text: "Hubo un problema al guardar.",
-        timer: 2000,
-        showConfirmButton: false,
-        customClass: {
-          popup: "!rounded-3xl",
-          icon: "text-xs",
-          title: "!text-xl",
-          htmlContainer: "!text-base",
-        },
       });
     }
   };
 
-  // Retornamos todo lo que la vista necesita
+  // Retorno del Hook (La API pública para tu componente)
   return {
     register,
     handleSubmit,
     errors,
-    onGuardar, // Función procesada
+    onGuardar,
     seguros,
     esEdicion,
-    navigate, // Por si el botón cancelar lo necesita
-    id // Por si quieres mostrar el ID en el título
+    navigate,
+    id,
+    watch,    // <--- NUEVO: Exponemos el vigilante
+    setValue  // <--- NUEVO: Exponemos el escritor
   };
 };

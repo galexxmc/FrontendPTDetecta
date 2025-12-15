@@ -1,10 +1,11 @@
 // Capa: Frontend - Presentation (Page)
 // Archivo: src/pages/PacienteForm.tsx
 
+import { useEffect } from "react"; // 🔥 CAMBIO: Importamos useEffect
 import { Save, ArrowLeft } from "lucide-react";
 import { usePacienteForm } from "../hooks/usePacienteForm";
+import { calcularEdad } from "../utils/dateUtils"; // 🔥 CAMBIO: Importamos la utilidad
 
-// Importamos nuestro UI Kit (Design System)
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
@@ -19,10 +20,29 @@ export default function PacienteForm() {
     seguros, 
     esEdicion, 
     navigate, 
-    id 
+    id,
+    watch,    // 🔥 CAMBIO: Necesitamos esto del hook
+    setValue  // 🔥 CAMBIO: Necesitamos esto del hook
   } = usePacienteForm();
 
-  // Mapeo de datos para los selectores
+  // 🔥 CAMBIO: Observamos el campo fechaNacimiento
+  const fechaNacimientoWatch = watch("fechaNacimiento");
+
+  // 🔥 CAMBIO: Efecto reactivo (Side Effect)
+  // Cada vez que cambia la fecha, recalculamos la edad automáticamente
+  useEffect(() => {
+    if (fechaNacimientoWatch) {
+      const edadCalculada = calcularEdad(fechaNacimientoWatch);
+      
+      // Seteamos el valor en el formulario
+      setValue("edad", edadCalculada, { 
+        shouldValidate: true, // Para que se quite el error si estaba vacío
+        shouldDirty: true     // Para indicar que el formulario cambió
+      });
+    }
+  }, [fechaNacimientoWatch, setValue]);
+
+  // Mapeo de datos...
   const opcionesSeguro = seguros.map((s) => ({
     value: s.idTipoSeguro,
     label: s.nombreSeguro
@@ -34,41 +54,33 @@ export default function PacienteForm() {
   ];
 
   return (
-    // RESPONSIVE 1: Padding externo ajustado (p-4 en móvil, md:p-8 en escritorio)
     <div className="flex justify-center p-4 md:p-8">
       <Card className="w-full max-w-3xl">
         
-        {/* ENCABEZADO */}
-        {/* RESPONSIVE 2: Padding interno ajustado (p-4 vs p-6) */}
+        {/* ENCABEZADO (Sin cambios) */}
         <div className="bg-slate-800 p-4 md:p-6 flex items-center gap-4">
           <button
             onClick={() => navigate("/pacientes")}
             className="p-2 bg-white/20 hover:bg-white/30 rounded-full transition text-white backdrop-blur-sm shrink-0"
             type="button"
-            title="Volver"
           >
             <ArrowLeft size={24} />
           </button>
           
-          <div className="text-white min-w-0"> {/* min-w-0 ayuda a truncar texto si es necesario */}
-            {/* RESPONSIVE 3: Tamaño de fuente adaptable (text-xl vs text-2xl) */}
+          <div className="text-white min-w-0">
             <h2 className="text-xl md:text-2xl font-bold truncate">
               {esEdicion ? "Editar Paciente" : "Registrar Paciente"}
             </h2>
             <p className="text-white text-xs md:text-sm mt-1 opacity-90 truncate">
-              {esEdicion
-                ? `Modificando registro ID: #${id}`
-                : "Todos los campos son obligatorios"}
+              {esEdicion ? `Modificando registro ID: #${id}` : "Todos los campos son obligatorios"}
             </p>
           </div>
         </div>
 
         {/* CUERPO DEL FORMULARIO */}
-        {/* RESPONSIVE 4: Menos padding en móvil para ganar espacio horizontal */}
         <div className="p-4 md:p-8">
           <form onSubmit={handleSubmit(onGuardar)} className="space-y-6">
             
-            {/* GRID PRINCIPAL: 1 columna en móvil, 2 en escritorio (md:grid-cols-2) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               
               {/* --- DATOS PERSONALES --- */}
@@ -98,17 +110,18 @@ export default function PacienteForm() {
                 {...register("apellidos", { required: "El apellido es obligatorio" })}
               />
 
-              {/* Fila Edad/Sexo: Mantenemos 2 columnas incluso en móvil porque son campos cortos */}
+              {/* Fila Edad/Sexo */}
               <div className="grid grid-cols-2 gap-3 md:gap-4">
+                
+                {/* 🔥 CAMBIO: Input Edad Bloqueado */}
                 <Input
                   label="Edad"
                   type="number"
                   placeholder="0"
-                  error={errors.edad?.message}
-                  {...register("edad", { 
-                    required: "Requerido", 
-                    min: { value: 0, message: "Mínimo 0" } 
-                  })}
+                  readOnly // 1. Bloqueamos escritura
+                  className="bg-gray-100 cursor-not-allowed text-gray-500 focus:ring-0" // 2. Feedback visual
+                  // 3. Quitamos validaciones complejas, solo required es suficiente porque se llena solo
+                  {...register("edad", { required: true })} 
                 />
                 
                 <Select
@@ -119,11 +132,16 @@ export default function PacienteForm() {
                 />
               </div>
 
+              {/* 🔥 CAMBIO: Fecha de Nacimiento es el trigger */}
               <Input
                 label="Fecha Nacimiento"
                 type="date"
                 error={errors.fechaNacimiento?.message}
-                {...register("fechaNacimiento", { required: "Fecha requerida" })}
+                {...register("fechaNacimiento", { 
+                    required: "Fecha requerida",
+                    // Validación opcional: No fechas futuras
+                    validate: value => new Date(value) <= new Date() || "Fecha inválida"
+                })}
               />
 
               <Select
@@ -133,7 +151,7 @@ export default function PacienteForm() {
                 {...register("idTipoSeguro", { required: "Seleccione un seguro" })}
               />
 
-              {/* --- DATOS DE CONTACTO --- */}
+              {/* --- DATOS DE CONTACTO (Sin cambios) --- */}
               <div className="md:col-span-2">
                 <Input
                   label="Dirección"
@@ -148,9 +166,9 @@ export default function PacienteForm() {
                 placeholder="999 000 000"
                 error={errors.telefono?.message}
                 {...register("telefono", { 
-                    required: "El teléfono es obligatorio",
-                    pattern: { value: /^[0-9]+$/, message: "Solo números" },
-                    minLength: { value: 9, message: "Mínimo 9 dígitos" }
+                  required: "El teléfono es obligatorio",
+                  pattern: { value: /^[0-9]+$/, message: "Solo números" },
+                  minLength: { value: 9, message: "Mínimo 9 dígitos" }
                 })} 
               />
               
@@ -160,28 +178,22 @@ export default function PacienteForm() {
                 placeholder="correo@ejemplo.com"
                 error={errors.email?.message}
                 {...register("email", { 
-                    required: "El email es obligatorio",
-                    pattern: {
-                        value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-                        message: "Formato de email inválido"
-                    }
+                  required: "El email es obligatorio",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+                    message: "Formato de email inválido"
+                  }
                 })} 
               />
 
             </div>
 
-            {/* BOTONES DE ACCIÓN */}
-            {/* RESPONSIVE 5:
-                - flex-col-reverse: En móvil, 'Guardar' va arriba y 'Cancelar' abajo.
-                - md:flex-row: En escritorio, van uno al lado del otro.
-            */}
+            {/* BOTONES DE ACCIÓN (Sin cambios) */}
             <div className="flex flex-col-reverse md:flex-row justify-end gap-3 pt-6 border-t border-gray-100 mt-6">
-              
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={() => navigate("/pacientes")}
-                // RESPONSIVE 6: Botones full width en móvil
                 className="w-full md:w-auto"
               >
                 Cancelar
