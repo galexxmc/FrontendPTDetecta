@@ -78,4 +78,4 @@ http://localhost:5173
 
 ## 👨‍💻 Autor
 
-Desarrollado con ❤️ por **Gherson Alexis**
+Desarrollador **Gherson Alexis**
