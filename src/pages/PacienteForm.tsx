@@ -1,10 +1,7 @@
-// Capa: Frontend - Presentation (Page)
-// Archivo: src/pages/PacienteForm.tsx
-
-import { useEffect } from "react"; // 🔥 CAMBIO: Importamos useEffect
+import { useEffect } from "react"; 
 import { Save, ArrowLeft } from "lucide-react";
 import { usePacienteForm } from "../hooks/usePacienteForm";
-import { calcularEdad } from "../utils/dateUtils"; // 🔥 CAMBIO: Importamos la utilidad
+import { calcularEdad } from "../utils/dateUtils"; 
 
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
@@ -21,28 +18,24 @@ export default function PacienteForm() {
     esEdicion, 
     navigate, 
     id,
-    watch,    // 🔥 CAMBIO: Necesitamos esto del hook
-    setValue  // 🔥 CAMBIO: Necesitamos esto del hook
+    watch,   
+    setValue 
   } = usePacienteForm();
 
-  // 🔥 CAMBIO: Observamos el campo fechaNacimiento
   const fechaNacimientoWatch = watch("fechaNacimiento");
 
-  // 🔥 CAMBIO: Efecto reactivo (Side Effect)
-  // Cada vez que cambia la fecha, recalculamos la edad automáticamente
   useEffect(() => {
     if (fechaNacimientoWatch) {
       const edadCalculada = calcularEdad(fechaNacimientoWatch);
       
-      // Seteamos el valor en el formulario
       setValue("edad", edadCalculada, { 
-        shouldValidate: true, // Para que se quite el error si estaba vacío
-        shouldDirty: true     // Para indicar que el formulario cambió
+        shouldValidate: true, 
+        shouldDirty: true 
       });
     }
   }, [fechaNacimientoWatch, setValue]);
 
-  // Mapeo de datos...
+
   const opcionesSeguro = seguros.map((s) => ({
     value: s.idTipoSeguro,
     label: s.nombreSeguro

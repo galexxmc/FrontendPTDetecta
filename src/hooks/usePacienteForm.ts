@@ -1,4 +1,3 @@
-// src/hooks/usePacienteForm.ts
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,16 +13,15 @@ import type { PacienteCrear, TipoSeguro } from "../types";
 export const usePacienteForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const esEdicion = !!id; 
+  const esEdicion = !!id;
 
   const [seguros, setSeguros] = useState<TipoSeguro[]>([]);
 
-  // Configuración del formulario
   const {
     register,
     handleSubmit,
-    setValue, // Necesario para actualizar la edad
-    watch,    // Necesario para vigilar la fecha
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<PacienteCrear>();
 
@@ -56,52 +54,78 @@ export const usePacienteForm = () => {
         }
       } catch (error) {
         console.error(error);
-        Swal.fire("Error", "No se pudo cargar la información", "error");
+        Swal.fire({
+          title: "¡Error!",
+          text: "No se pudo cargar la información",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false,
+          customClass: {
+            popup: "!rounded-3xl",
+            icon: "text-xs",
+            title: "!text-xl",
+            htmlContainer: "!text-base",
+          },
+        });
         navigate("/pacientes");
       }
     };
 
     cargarDatos();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, esEdicion]); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, esEdicion]);
 
-  // --- LÓGICA DE GUARDADO (SUBMIT) ---
   const onGuardar = async (data: PacienteCrear) => {
     try {
-      // Conversiones de tipos
       data.idTipoSeguro = Number(data.idTipoSeguro);
       data.edad = Number(data.edad);
 
       if (esEdicion) {
         await actualizarPaciente(Number(id), data);
         Swal.fire({
+          title: "¡Actualizado!",
+          text: "Datos del paciente modificados correctamente",
           icon: "success",
-          title: "Actualizado",
-          text: "Datos modificados correctamente.",
           timer: 2000,
           showConfirmButton: false,
+          customClass: {
+            popup: "!rounded-3xl",
+            icon: "text-xs",
+            title: "!text-xl",
+            htmlContainer: "!text-base",
+          },
         });
       } else {
-        // 🔥 LIMPIEZA DE ARQUITECTURA: 
-        // Eliminamos: data.usuarioRegistro = "WebUser"; 
-        // El Backend (Interceptor + JWT) ya sabe quién eres.
-        
         await crearPaciente(data);
         Swal.fire({
+          title: "¡Registrado!",
+          text: "Paciente creado correctamente",
           icon: "success",
-          title: "Registrado",
-          text: "Paciente creado correctamente.",
           timer: 2000,
           showConfirmButton: false,
+          customClass: {
+            popup: "!rounded-3xl",
+            icon: "text-xs",
+            title: "!text-xl",
+            htmlContainer: "!text-base",
+          },
         });
       }
       navigate("/pacientes");
     } catch (error) {
       console.error(error);
       Swal.fire({
-        icon: "error",
         title: "¡Error!",
-        text: "Hubo un problema al guardar.",
+        text: "Hubo un problema al guardar",
+        icon: "error",
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: "!rounded-3xl",
+          icon: "text-xs",
+          title: "!text-xl",
+          htmlContainer: "!text-base",
+        },
       });
     }
   };
@@ -116,7 +140,7 @@ export const usePacienteForm = () => {
     esEdicion,
     navigate,
     id,
-    watch,    // <--- NUEVO: Exponemos el vigilante
-    setValue  // <--- NUEVO: Exponemos el escritor
+    watch,
+    setValue,
   };
 };

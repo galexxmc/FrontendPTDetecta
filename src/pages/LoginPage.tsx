@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
@@ -38,13 +38,20 @@ export default function LoginPage() {
       setTimeout(() => {
         navigate("/pacientes");
       }, 3800);
-
     } catch (error) {
       console.error(error);
       Swal.fire({
+        title: "¡Error!",
+        text: "Verifica si tu correo y/o contraseña ingresados son los correctos",
         icon: "error",
-        title: "Acceso Denegado",
-        customClass: { popup: "!rounded-3xl" },
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: "!rounded-3xl",
+          icon: "text-xs",
+          title: "!text-xl",
+          htmlContainer: "!text-base",
+        },
       });
       setIsSubmitting(false);
     }
@@ -52,40 +59,39 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
-
       {/* --- CAPA 1: FONDO BLANCO --- */}
       <AnimatePresence>
         {isSuccess && (
-            <motion.div 
-                className="fixed inset-0 bg-white pointer-events-none"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.0, duration: 0.8 }}
-                style={{ zIndex: 20 }}
-            />
+          <motion.div
+            className="fixed inset-0 bg-white pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.0, duration: 0.8 }}
+            style={{ zIndex: 20 }}
+          />
         )}
       </AnimatePresence>
 
       {/* --- CAPA 2: LOGO (AJUSTADO) --- */}
       <motion.img
-        layout 
+        layout
         src={logoDetecta}
-        animate={{ 
-            scale: isSuccess ? 0.75 : 1,
-            opacity: isFadingOut ? 0 : 1,
-            // NUEVO: Si hay éxito, sube 50px. Si no, se queda en 0.
-            // Puedes jugar con este valor: -30, -50, -80...
-            y: isSuccess ? -50 : 0 
-        }} 
-        transition={{ 
-            // Usamos spring para el movimiento 'y' también, para que rebote un poco al subir
-            scale: { type: "spring", stiffness: 100, damping: 20 },
-            y: { type: "spring", stiffness: 100, damping: 20 }, 
-            opacity: { duration: 0.5, ease: "easeInOut" } 
+        animate={{
+          scale: isSuccess ? 0.75 : 1,
+          opacity: isFadingOut ? 0 : 1,
+          // NUEVO: Si hay éxito, sube 50px. Si no, se queda en 0.
+          // Puedes jugar con este valor: -30, -50, -80...
+          y: isSuccess ? -50 : 0,
         }}
-        className="w-40 h-auto object-contain drop-shadow-md mx-auto mb-5 relative z-50" 
+        transition={{
+          // Usamos spring para el movimiento 'y' también, para que rebote un poco al subir
+          scale: { type: "spring", stiffness: 100, damping: 20 },
+          y: { type: "spring", stiffness: 100, damping: 20 },
+          opacity: { duration: 0.5, ease: "easeInOut" },
+        }}
+        className="w-40 h-auto object-contain drop-shadow-md mx-auto mb-5 relative z-50"
       />
-      
+
       {/* --- CAPA 3: CÍRCULOS DE CARGA (AJUSTADO) --- */}
       <AnimatePresence>
         {isSuccess && (
@@ -93,33 +99,32 @@ export default function LoginPage() {
             className="absolute inset-0 flex items-center justify-center"
             // Initial: Empieza un poco más abajo para que el efecto de subida sea más notorio
             initial={{ opacity: 0, y: 0 }}
-            
             // Animate: Se mueve a la misma posición 'y' que el logo (-50)
-            animate={{ 
-                opacity: isFadingOut ? 0 : 1,
-                y: -50 // Sincronizado con el logo
+            animate={{
+              opacity: isFadingOut ? 0 : 1,
+              y: -50, // Sincronizado con el logo
             }}
-            transition={{ duration: 1 }} 
+            transition={{ duration: 1 }}
             style={{ zIndex: 40 }}
           >
-             <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                transition={{ delay: 0.5, duration: 0.5 }}
-                className="relative flex items-center justify-center"
-             >
-                {/* Círculos giratorios (Velocidad rápida mantenida) */}
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                  className="absolute w-48 h-48 rounded-full border-2 border-dotted border-lime-400 shadow-[0_0_15px_rgba(163,230,53,0.3)]"
-                />
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                  className="absolute w-55 h-55 rounded-full border-4 border-cyan-500 border-t-transparent shadow-[0_0_20px_rgba(6,182,212,0.4)]"
-                />
-             </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="relative flex items-center justify-center"
+            >
+              {/* Círculos giratorios (Velocidad rápida mantenida) */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                className="absolute w-48 h-48 rounded-full border-2 border-dotted border-lime-400 shadow-[0_0_15px_rgba(163,230,53,0.3)]"
+              />
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                className="absolute w-55 h-55 rounded-full border-4 border-cyan-500 border-t-transparent shadow-[0_0_20px_rgba(6,182,212,0.4)]"
+              />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -136,34 +141,80 @@ export default function LoginPage() {
             transition={{ duration: 0.5, ease: "easeInOut" }}
           >
             <div className="bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-3xl shadow-2xl">
-              <h1 className="text-2xl font-bold text-white mb-2 text-center">Bienvenido</h1>
-              <p className="text-gray-400 text-sm mb-6 text-center">Ingresa tus credenciales</p>
+              <h1 className="text-2xl font-bold text-white mb-2 text-center">
+                Bienvenido
+              </h1>
+              <p className="text-gray-400 text-sm mb-6 text-center">
+                Ingresa tus credenciales
+              </p>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 text-left">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-5 text-left"
+              >
                 <div>
-                  <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Correo</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase ml-1">
+                    Correo
+                  </label>
                   <div className="relative mt-1">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Mail size={18} /></div>
-                    <input {...register("email", { required: true })} className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 transition" placeholder="admin@detecta.com" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                      <Mail size={18} />
+                    </div>
+                    <input
+                      {...register("email", { required: true })}
+                      className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 transition"
+                      placeholder="admin@detecta.com"
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-gray-400 uppercase ml-1">Contraseña</label>
+                  <label className="text-xs font-semibold text-gray-400 uppercase ml-1">
+                    Contraseña
+                  </label>
                   <div className="relative mt-1">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500"><Lock size={18} /></div>
-                    <input type="password" {...register("password", { required: true })} className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 transition" placeholder="••••••" />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+                      <Lock size={18} />
+                    </div>
+                    <input
+                      type="password"
+                      {...register("password", { required: true })}
+                      className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-cyan-500 transition"
+                      placeholder="••••••"
+                    />
                   </div>
                 </div>
 
-                <button type="submit" disabled={isSubmitting} className="w-full py-3.5 bg-linear-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 mt-4">
-                  {isSubmitting ? <Loader2 className="animate-spin" /> : <>Ingresar <ArrowRight size={20} /></>}
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 bg-linear-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 mt-4"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <>
+                      Ingresar <ArrowRight size={20} />
+                    </>
+                  )}
                 </button>
               </form>
 
               <div className="mt-6 text-center">
-                <Link to="/register" className="text-cyan-400 hover:text-cyan-300 font-semibold text-sm hover:underline">Regístrate aquí</Link>
-                <p className="mt-2"><Link to="/forgot-password" className="text-slate-400 hover:text-white text-xs underline">Olvidé mi contraseña</Link></p>
+                <Link
+                  to="/register"
+                  className="text-cyan-400 hover:text-cyan-300 font-semibold text-sm hover:underline"
+                >
+                  Regístrate aquí
+                </Link>
+                <p className="mt-2">
+                  <Link
+                    to="/forgot-password"
+                    className="text-slate-400 hover:text-white text-xs underline"
+                  >
+                    Olvidé mi contraseña
+                  </Link>
+                </p>
               </div>
             </div>
 
